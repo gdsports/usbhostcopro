@@ -41,7 +41,7 @@ while True:
 
     if data is not None:
         # Show the byte as 2 hex digits then in the default way
-		print("%02x " % (data[0]), end='')
+        print("%02x " % (data[0]), end='')
         print(data)
 ```
 
@@ -68,4 +68,28 @@ USB Point of Sale. Some readers can be configured so consult the reader manual.
 
 USB RFID readers (at least, the cheap ones) can only read the card unique
 serial number.
+
+## USB Host keyboard advanced
+
+KBDADVUARTUSBH when used with a USB keyboard outputs USB keyboard HID reports
+on the UART. UART input is ignored. All USB keyboard keycodes are supported.
+For example, Ctrl-ALT-Shift-F12 is a valid keystroke as well as Ctrl-ALT-DEL.
+The CircuitPython program kbdhid.py receives the HID report and sends it
+out. Two Trinket M0 cross connected via UART Tx and Rx, one running KBDADVUARTUSBH
+and the other running kbdhid.py, act as a USB keyboard pass through. Either
+program can be modified to swap keys, expand macros, etc.
+
+```
+USB keyboard > USB OTG to host > Trinket M0-A > UART TX/RX > Trinket M0-B > computer
+                                 KBDADVUARTUSBH              kbdhid.py
+```
+
+![USB Keyboard pass through](./images/usb_keyboard_passthru.jpg)
+
+Trinket M0-A keyboard	|Trinket M0-B computer
+------------------------|-------------
+GND						|GND
+USB (5V in)				|USB (5V out)
+UART Tx(4)				|UART Rx(3)
+UART Rx(3)				|UART Rx(4)
 
