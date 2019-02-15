@@ -29,6 +29,12 @@
 #define dbprintln(...)
 #endif
 
+// setup Dotstar LED on Trinket M0
+#include <Adafruit_DotStar.h>
+#define DATAPIN    7
+#define CLOCKPIN   8
+Adafruit_DotStar strip = Adafruit_DotStar(1, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
+
 class KbdRptParser : public KeyboardReportParser
 {
     void PrintKey(uint8_t mod, uint8_t key);
@@ -126,6 +132,14 @@ KbdRptParser Prs;
 
 void setup()
 {
+  // Turn off built-in RED LED
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  // Turn off built-in Dotstar RGB LED
+  strip.begin();
+  strip.clear();
+  strip.show();
+
   dbbegin( 115200 );
   dbprintln("Start");
   consbegin( 115200 );

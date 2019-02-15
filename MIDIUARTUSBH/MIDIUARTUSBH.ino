@@ -31,6 +31,12 @@
 #include <usbh_midi.h>  // https://github.com/gdsports/USB_Host_Library_SAMD
 #include <usbhub.h>
 
+// setup Dotstar LED on Trinket M0
+#include <Adafruit_DotStar.h>
+#define DATAPIN    7
+#define CLOCKPIN   8
+Adafruit_DotStar strip = Adafruit_DotStar(1, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
+
 // 1 turns on debug, 0 off
 #define DBGSERIAL if (0) SERIAL_PORT_MONITOR
 
@@ -69,6 +75,14 @@ void sysex_end(uint8_t i)
 
 
 void setup() {
+  // Turn off built-in RED LED
+  pinMode(LED_BUILTIN, OUTPUT);
+  digitalWrite(LED_BUILTIN, LOW);
+  // Turn off built-in Dotstar RGB LED
+  strip.begin();
+  strip.clear();
+  strip.show();
+
   DBGSERIAL.begin(115200);
 
   MIDIUART.begin(MIDI_CHANNEL_OMNI);
