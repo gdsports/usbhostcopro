@@ -47,6 +47,7 @@ else
 fi
 cd usbhostcopro
 BOARD="adafruit:samd:adafruit_trinket_m0"
+arduino --board "${BOARD}" --save-prefs
 CC="arduino --verify --board ${BOARD}"
 find . -name '*.ino' -print0 | xargs -0 -n 1 $CC >/tmp/m0_$$.txt 2>&1
 # Export binary

@@ -73,6 +73,8 @@ void sysex_end(uint8_t i)
   sysexSize = 0;
 }
 
+const uint8_t MIDI_passthru_pin=0;
+bool MIDI_passthru;
 
 void setup() {
   // Turn off built-in RED LED
@@ -85,8 +87,18 @@ void setup() {
 
   DBGSERIAL.begin(115200);
 
+  // Pin 0 LOW selects MIDI pass through on
+  pinMode(MIDI_passthru_pin, INPUT_PULLUP);
+  MIDI_passthru = (digitalRead(MIDI_passthru_pin) == LOW);
+
   MIDIUART.begin(MIDI_CHANNEL_OMNI);
-  //MIDIUART.turnThruOff();
+  if (MIDI_passthru) {
+    DBGSERIAL.println("MIDI thru on");
+  }
+  else {
+    DBGSERIAL.println("MIDI thru off");
+    MIDIUART.turnThruOff();
+  }
 
   if (UsbH.Init()) {
     DBGSERIAL.println(F("USB host failed to start"));
