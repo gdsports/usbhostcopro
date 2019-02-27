@@ -6,7 +6,7 @@
 # The second byte is always 0x08 because the keyboard HID report
 # is always 8 bytes long.
 # The 8 byte HID report is sent out the HID keyboard device.
-# 
+#
 
 import board
 import busio
