@@ -45,6 +45,11 @@ while True:
         print(data)
 ```
 
+## Related Projects
+
+[Convert USB keyboard to Bluetooth LE](https://github.com/gdsports/usbkbdble)
+[USB Host MIDI for Two](https://github.com/gdsports/usbhostmidix2)
+
 ## USB Host MIDI to UART
 
 MIDIUARTUSBH is a bi-directional converter for USB host MIDI and UART MIDI. The
