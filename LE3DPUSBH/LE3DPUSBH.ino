@@ -81,6 +81,19 @@ while True:
 Adafruit_DotStar strip = Adafruit_DotStar(1, DATAPIN, CLOCKPIN, DOTSTAR_BRG);
 #endif
 
+uint32_t last_millis;
+
+uint32_t elapsed_mSecs(void)
+{
+  uint32_t now = millis();
+  if (now < last_millis) {
+    return (now + 1) + (0xFFFFFFFF - last_millis);
+  }
+  else {
+    return now - last_millis;
+  }
+}
+
 struct GamePadEventData
 {
   union { //axes and hat switch
@@ -189,9 +202,14 @@ void setup()
 
   if (!Hid.SetReportParser(0, &Joy))
       dbprint(F("SetReportParser failed"));
+
+  last_millis = millis();
 }
 
 void loop()
 {
+  if (elapsed_mSecs() > 10) {
+    last_millis = millis();
     UsbH.Task();
+  }
 }

@@ -126,6 +126,8 @@ X and Y axes    |0..1023
 twist           |0..255
 throttle        |0..255
 hat             |0..8
+buttons_a       |0..255
+buttons_b       |0..255
 
 Hat     |Direction
 --------|---------
@@ -139,8 +141,33 @@ Hat     |Direction
 7|North West
 8|no direction
 
-TBD
-buttons_a, buttons_b: press the buttons and see the values
+The buttons are labelled but the numbers in a hard read gray-on-black and using
+an odd looking typeface.
+
+buttons_a
+Bit|Value|Button
+---|-----|------
+0  | 1   |Front Trigger
+1  | 2   |Side Trigger
+2  | 4   |Button 3
+3  | 8   |Button 4
+4  | 16  |Button 5
+5  | 32  |Button 6
+6  | 64  |Button 7
+7  |128  |Button 8
+
+buttons_b
+Bit|Value|Button
+---|-----|------
+0  | 1   |Button 9
+1  | 2   |Button 10
+2  | 4   |Button 11
+3  | 8   |Button 12
+
+
+See the [firmware](./firmware) directory for the latest binary releases.
+
+Sample minimum MicroPython code for ESP32.
 
 ```
 from machine import UART
