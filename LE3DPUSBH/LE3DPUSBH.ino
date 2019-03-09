@@ -94,7 +94,7 @@ uint32_t elapsed_mSecs(void)
   }
 }
 
-struct GamePadEventData
+struct LE3DPEventData
 {
   union { //axes and hat switch
     uint32_t axes;
@@ -110,13 +110,32 @@ struct GamePadEventData
   uint8_t buttons_b;
 };
 
+// Thrustmaster T.16000M
+struct T16KEventData
+{
+  uint16_t	buttons;
+  uint8_t		hat;
+  uint16_t	x;
+  uint16_t	y;
+  uint8_t		twist;
+  uint8_t		slider;
+}__attribute__((packed));
+
+struct GamePadEventData
+{
+  union {
+    struct LE3DPEventData le3dp;
+    struct T16KEventData  t16k;
+  };
+};
+
 class JoystickEvents
 {
 public:
-	virtual void OnGamePadChanged(const GamePadEventData *evt);
+	virtual void OnGamePadChanged(const GamePadEventData *evt, size_t len);
 };
 
-#define RPT_GAMEPAD_LEN	sizeof(GamePadEventData)/sizeof(uint8_t)
+#define RPT_GAMEPAD_LEN	sizeof(GamePadEventData)
 
 class JoystickReportParser : public HIDReportParser
 {
@@ -142,41 +161,74 @@ JoystickReportParser::JoystickReportParser(JoystickEvents *evt) :
 void JoystickReportParser::Parse(HID *hid, uint32_t is_rpt_id, uint32_t len, uint8_t *buf)
 {
 	// Checking if there are changes in report since the method was last called
-  bool match = (memcmp(oldPad, buf, sizeof(oldPad)) == 0);
+  bool match = (memcmp(oldPad, buf, len) == 0);
 
   // Calling Game Pad event handler
 	if (!match && joyEvents) {
-		joyEvents->OnGamePadChanged((const GamePadEventData*)buf);
-    memcpy(oldPad, buf, sizeof(oldPad));
+    //dbprint("Parse len="); dbprint(len); dbprint(':');
+    for (int i = 0; i < len; i++) {
+      dbprint(buf[i], HEX);
+      dbprint(' ');
+    }
+    dbprintln();
+    joyEvents->OnGamePadChanged((const GamePadEventData*)buf, len);
+    memcpy(oldPad, buf, len);
 	}
 }
 
 
 
-void JoystickEvents::OnGamePadChanged(const GamePadEventData *evt)
+void JoystickEvents::OnGamePadChanged(const GamePadEventData *genevt, size_t len)
 {
   char json[128];
 
-  int retcode = snprintf(json, sizeof(json),
-      "{\"X\":%d,\"Y\":%d,\"twist\":%d,\"hat\":%d,\"throttle\":%d,\"buttons_a\":%d,\"buttons_b\":%d}",
-      evt->x, evt->y, evt->twist, evt->hat, evt->slider,
-      evt->buttons_a, evt->buttons_b);
-  if (retcode > 0) jsonprintln(json);
-	dbprint(F("X: "));
-	dbprint(evt->x);
-	dbprint(F(" Y: "));
-	dbprint(evt->y);
-	dbprint(F(" Hat Switch: "));
-	dbprint(evt->hat);
-	dbprint(F(" Twist: "));
-	dbprint(evt->twist);
-	dbprint(F(" Throttle: "));
-	dbprint(evt->slider);
-  dbprint(F(" Buttons A: 0x"));
-	dbprint(evt->buttons_a, HEX);
-	dbprint(F(" Buttons B: 0x"));
-	dbprint(evt->buttons_b, HEX);
-	dbprintln();
+  // TODO Check VID/PID instead of report length
+  if (len == 9) {
+    // Assume Thrustmaster T.16000M
+    const T16KEventData *evt=(const T16KEventData*)genevt;
+    int retcode = snprintf(json, sizeof(json),
+        "{\"X\":%d,\"Y\":%d,\"twist\":%d,\"hat\":%d,\"throttle\":%d,\"buttons\":%d}",
+        evt->x, evt->y, evt->twist, evt->hat, evt->slider,
+        evt->buttons);
+    if (retcode > 0) jsonprintln(json);
+    dbprint(F("X: "));
+    dbprint(evt->x);
+    dbprint(F(" Y: "));
+    dbprint(evt->y);
+    dbprint(F(" Hat Switch: "));
+    dbprint(evt->hat);
+    dbprint(F(" Twist: "));
+    dbprint(evt->twist);
+    dbprint(F(" Throttle: "));
+    dbprint(evt->slider);
+    dbprint(F(" Buttons: 0x"));
+    dbprint(evt->buttons, HEX);
+    dbprintln();
+  }
+  else {
+    // Assume Logitech Extreme 3D Pro
+    const LE3DPEventData *evt=(const LE3DPEventData*)genevt;
+    int retcode = snprintf(json, sizeof(json),
+        "{\"X\":%d,\"Y\":%d,\"twist\":%d,\"hat\":%d,\"throttle\":%d,\"buttons_a\":%d,\"buttons_b\":%d}",
+        evt->x, evt->y, evt->twist, evt->hat, evt->slider,
+        evt->buttons_a, evt->buttons_b);
+    if (retcode > 0) jsonprintln(json);
+    dbprint(F("X: "));
+    dbprint(evt->x);
+    dbprint(F(" Y: "));
+    dbprint(evt->y);
+    dbprint(F(" Hat Switch: "));
+    dbprint(evt->hat);
+    dbprint(F(" Twist: "));
+    dbprint(evt->twist);
+    dbprint(F(" Throttle: "));
+    dbprint(evt->slider);
+    dbprint(F(" Buttons A: 0x"));
+    dbprint(evt->buttons_a, HEX);
+    dbprint(F(" Buttons B: 0x"));
+    dbprint(evt->buttons_b, HEX);
+    dbprintln();
+  }
 }
 
 void setup()

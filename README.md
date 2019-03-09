@@ -190,3 +190,48 @@ while True:
         except:
             print("json error")
 ```
+
+### Thrustmaster T.16000M USB Joystick
+
+Experimental support for the Thrustmaster T.16000M joystick has been added. It
+is automatically detected.
+
+Joystick        |Range
+----------------|-----
+X and Y axes    |0..16383
+twist           |0..255
+throttle        |0..255
+hat             |0..7,63
+buttons         |0..65535
+
+Hat     |Direction
+--------|---------
+0|North, Forward
+1|North East
+2|East, Right
+3|South East
+4|South, Back
+5|South West
+6|West, Left
+7|North West
+63|no direction
+
+buttons
+Bit|Value|Button
+---|-----|------
+0  | 1   |Front Trigger
+1  | 2   |Top middle
+2  | 4   |Top left
+3  | 8   |Top right
+4  | 16  |Base left front low
+5  | 32  |Base left front middle
+6  | 64  |Base left front high
+7  |128  |Base left back high
+8  |256  |Base left back middle
+9  |512  |Base left back low
+10 |1024 |Base right front low
+11 |2048 |Base right front middle
+12 |4096 |Base right front high
+13 |8192 |Base right back high
+14 |16384|Base right back middle
+15 |32768|Base right back low
