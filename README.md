@@ -217,6 +217,7 @@ Hat     |Direction
 63|no direction
 
 buttons
+
 Bit|Value|Button
 ---|-----|------
 0  | 1   |Front Trigger
