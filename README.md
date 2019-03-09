@@ -98,3 +98,68 @@ USB (5V in)				|USB (5V out)
 UART Tx(4)				|UART Rx(3)
 UART Rx(3)				|UART Rx(4)
 
+## Logitech Extreme 3D Pro USB Joystick
+
+LE3DPUSBH takes input from the Logitech joystick and outputs JSON on the
+Trinket M0 UART Tx pin at 921,600 bits/sec. This high speed is used because
+JSON is verbose.
+
+![Logitech joystick with Trinket M0 and ESP32](./images/logitechjoy.jpg)
+
+This was tested with a SparkFun ESP32 Thing running MicroPython.
+
+```
+Logitech joystick -> USB OTG host cable -> Trinket M0 -> ESP32 -> Computer
+                                           LE3DPUSBH     uPython
+```
+
+Trinket M0	|ESP32
+------------|-------------
+GND         |GND
+USB (5V in) |VUSB (5V out)
+UART Tx(4)  |16 (UART2 Rx)
+UART Rx(3)  |17 (UART2 Tx)
+
+Joystick        |Range
+----------------|-----
+X and Y axes    |0..1023
+twist           |0..255
+throttle        |0..255
+hat             |0..8
+
+Hat     |Direction
+--------|---------
+0|North, Forward
+1|North East
+2|East, Right
+3|South East
+4|South, Back
+5|South West
+6|West, Left
+7|North West
+8|no direction
+
+TBD
+buttons_a, buttons_b: press the buttons and see the values
+
+```
+from machine import UART
+import ujson
+
+uart = UART(2, tx=17, rx=16)
+uart.init(8*115200, bits=8, parity=None, stop=1)
+
+while True:
+    # Read line of JSON from Trinket M0 connected to the joystick
+    data = uart.readline()
+    if data is not None:
+        try:
+            # Convert JSON string to Python dictionary
+            joy = ujson.loads(data)
+            print(joy)
+            print(joy['X'])
+            # Insert code to change motor or servo direction and speed based
+            # on joy['X'], joy['Y'], joy['hat'], etc.
+        except:
+            print("json error")
+```
