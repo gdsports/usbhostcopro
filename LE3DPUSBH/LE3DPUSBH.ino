@@ -187,7 +187,7 @@ void JoystickEvents::OnGamePadChanged(const GamePadEventData *genevt, size_t len
     // Assume Thrustmaster T.16000M
     const T16KEventData *evt=(const T16KEventData*)genevt;
     int retcode = snprintf(json, sizeof(json),
-        "{\"X\":%d,\"Y\":%d,\"twist\":%d,\"hat\":%d,\"throttle\":%d,\"buttons\":%d}",
+        "{\"jstype\":1,\"X\":%d,\"Y\":%d,\"twist\":%d,\"hat\":%d,\"throttle\":%d,\"buttons\":%d}",
         evt->x, evt->y, evt->twist, evt->hat, evt->slider,
         evt->buttons);
     if (retcode > 0) jsonprintln(json);
@@ -209,7 +209,7 @@ void JoystickEvents::OnGamePadChanged(const GamePadEventData *genevt, size_t len
     // Assume Logitech Extreme 3D Pro
     const LE3DPEventData *evt=(const LE3DPEventData*)genevt;
     int retcode = snprintf(json, sizeof(json),
-        "{\"X\":%d,\"Y\":%d,\"twist\":%d,\"hat\":%d,\"throttle\":%d,\"buttons_a\":%d,\"buttons_b\":%d}",
+        "{\"jstype\":0,\"X\":%d,\"Y\":%d,\"twist\":%d,\"hat\":%d,\"throttle\":%d,\"buttons_a\":%d,\"buttons_b\":%d}",
         evt->x, evt->y, evt->twist, evt->hat, evt->slider,
         evt->buttons_a, evt->buttons_b);
     if (retcode > 0) jsonprintln(json);

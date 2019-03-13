@@ -47,8 +47,8 @@ while True:
 
 ## Related Projects
 
-[Convert USB keyboard to Bluetooth LE](https://github.com/gdsports/usbkbdble)
-[USB Host MIDI for Two](https://github.com/gdsports/usbhostmidix2)
+* [Convert USB keyboard to Bluetooth LE](https://github.com/gdsports/usbkbdble)
+* [USB Host MIDI for Two](https://github.com/gdsports/usbhostmidix2)
 
 ## USB Host MIDI to UART
 
@@ -122,6 +122,7 @@ UART Rx(3)  |17 (UART2 Tx)
 
 Joystick        |Range
 ----------------|-----
+jstype          |0
 X and Y axes    |0..1023
 twist           |0..255
 throttle        |0..255
@@ -145,6 +146,7 @@ The buttons are labelled but the numbers in a hard read gray-on-black and using
 an odd looking typeface.
 
 buttons_a
+
 Bit|Value|Button
 ---|-----|------
 0  | 1   |Front Trigger
@@ -157,6 +159,7 @@ Bit|Value|Button
 7  |128  |Button 8
 
 buttons_b
+
 Bit|Value|Button
 ---|-----|------
 0  | 1   |Button 9
@@ -198,6 +201,7 @@ is automatically detected.
 
 Joystick        |Range
 ----------------|-----
+jstype          |1
 X and Y axes    |0..16383
 twist           |0..255
 throttle        |0..255
