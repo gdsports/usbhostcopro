@@ -98,6 +98,20 @@ USB (5V in)				|USB (5V out)
 UART Tx(4)				|UART Rx(3)
 UART Rx(3)				|UART Rx(4)
 
+## USB Host CDC ACM to UART
+
+CDCACMUSBH bi-directionally transfers data between a USB device with CDC ACM
+USB serial to a UART port runnning at 115,200. This provides access to data
+from a USB CDC ACM device such as an Arduino board to another device with a
+UART but no USB hardware. For example, connect an ESP32 to a Pro Micro board.
+The Pro Micro has a USB native hardware port and lots of 5V digital and analog
+I/O, PWM, etc. Firmata might work here.
+
+```
+USB CDC ACM -> USB OTG host cable -> Trinket M0 -> UART Tx/Rx -> ESP32
+Pro Micro                            CDCACMUSBH
+```
+
 ## Logitech Extreme 3D Pro USB Joystick
 
 LE3DPUSBH takes input from the Logitech joystick and outputs JSON on the
