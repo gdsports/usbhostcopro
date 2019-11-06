@@ -98,6 +98,40 @@ USB (5V in)				|USB (5V out)
 UART Tx(4)				|UART Rx(3)
 UART Rx(3)				|UART Rx(4)
 
+## USB Host mouse advanced
+
+MSEADVUARTUSBH when used with a USB mouse outputs USB mouse HID reports on the
+UART. UART input is ignored. The UART runs as 921,600 bits/sec (8\*115200).
+
+Each mouse HID report appears on the UART TX in the following format.
+
+uint8_t mouseHID[7];
+
+mouseHID[0] = 0x02;  // (STX)
+mouseHID[1] = 0x24;  // Mouse report 4 bytes follow
+mouseHID[2] = 0xhh;  // Mouse button bitmap, 1=button pressed
+mouseHID[3] = 0xhh;  // int8_t X-axis relative movement
+mouseHID[4] = 0xhh;  // int8_t Y-axis relative movement
+mouseHID[5] = 0x00;  // int8_t scroll wheel movement (not used)
+mouseHID[6] = 0x03;  // (ETX)
+
+See https://github.com/gdsports/usbmseble for a sketch that parses the UART
+stream and extracts the HID report.
+
+```
+USB mouse > USB OTG to host > Trinket M0    > UART TX
+                              MSEADVUARTUSBH
+```
+
+![USB Keyboard pass through](./images/usb_keyboard_passthru.jpg)
+
+Trinket M0-A keyboard	|Trinket M0-B computer
+------------------------|-------------
+GND						|GND
+USB (5V in)				|USB (5V out)
+UART Tx(4)				|UART Rx(3)
+UART Rx(3)				|UART Rx(4)
+
 ## USB Host CDC ACM to UART
 
 CDCACMUSBH bi-directionally transfers data between a USB device with CDC ACM
