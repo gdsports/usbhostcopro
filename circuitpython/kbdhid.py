@@ -10,6 +10,7 @@
 
 import board
 import busio
+import usb_hid
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 from adafruit_hid.keycode import Keycode
@@ -19,7 +20,7 @@ ETX=0x03
 
 uart = busio.UART(board.TX, board.RX, baudrate=115200)
 
-keyboard = Keyboard()
+keyboard = Keyboard(usb_hid.devices)
 keyboard_layout = KeyboardLayoutUS(keyboard)
 
 while True:
@@ -27,7 +28,8 @@ while True:
 
     if data is not None:
         if (len(data) == 11) and (data[0] == STX) and (data[1] == 0x08) and (data[10] == ETX):
-            keyboard.hid_keyboard.send_report(data[2:10])
+            keyboard.report=bytearray(data[2:10])
+            keyboard.send()
         else:
             # Scan for STX ... ETX to resync
             print(data)
@@ -37,4 +39,5 @@ while True:
                     report = data[i:len(data)] + uart.read(11-(len(data)-i))
                     print(report)
                     if (len(report) == 11) and (report[0] == STX) and (report[1] == 0x08) and (report[10] == ETX):
-                        keyboard.hid_keyboard.send_report(report[2:10])
+                        keyboard.report=bytearray(report[2:10])
+                        keyboard.send()
