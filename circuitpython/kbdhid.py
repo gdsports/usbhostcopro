@@ -39,4 +39,5 @@ while True:
                     report = data[i:len(data)] + uart.read(11-(len(data)-i))
                     print(report)
                     if (len(report) == 11) and (report[0] == STX) and (report[1] == 0x08) and (report[10] == ETX):
-                        keyboard.hid_keyboard.send_report(report[2:10])
+                        keyboard.report=bytearray(report[2:10])
+                        keyboard.send()
