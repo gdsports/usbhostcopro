@@ -105,6 +105,7 @@ UART. UART input is ignored. The UART runs as 921,600 bits/sec (8\*115200).
 
 Each mouse HID report appears on the UART TX in the following format.
 
+```
 uint8_t mouseHID[7];
 
 mouseHID[0] = 0x02;  // (STX)
@@ -114,6 +115,7 @@ mouseHID[3] = 0xhh;  // int8_t X-axis relative movement
 mouseHID[4] = 0xhh;  // int8_t Y-axis relative movement
 mouseHID[5] = 0x00;  // int8_t scroll wheel movement (not used)
 mouseHID[6] = 0x03;  // (ETX)
+```
 
 See https://github.com/gdsports/usbmseble for a sketch that parses the UART
 stream and extracts the HID report.
